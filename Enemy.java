@@ -1,5 +1,3 @@
-package Adventure;
-
 public class Enemy {
 	private int hp;
 	private int level;
