@@ -1,6 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -27,8 +28,8 @@ public class mainLevel {
 	private static HashMap<String, Integer> shopItems = new HashMap<String, Integer>();
 	private static HashMap<String, Integer> damageShop = new HashMap<String, Integer>();
 	private static JFrame frame;
-	private static JLabel myHP = new JLabel();
 	private static JLabel enemyHP = new JLabel();
+	private static JLabel hp_label = new JLabel();
 	public static void main(String[] args){
 		setFrame();
 		shopItems.put("sword", 5);
@@ -50,6 +51,9 @@ public class mainLevel {
 		astrix.add("                *");
 		astrix.add("               *");
 		character = new Player(50, 1);
+		hp_label.setText("HP: " + Integer.toString(character.getHP()));
+		frame.revalidate();
+    	frame.repaint();
 		int max = character.getHP();
 		character.addWeapon("sword", 1);
 		while (character.getHP() > 0) {
@@ -73,27 +77,41 @@ public class mainLevel {
 	}
 	
 	public static JFrame setFrame(){
-		frame = new JFrame("My First GUI");
+		frame = new JFrame("RPG Creation");
 		frame.setLayout(new BorderLayout());
-		JPanel subPanel1 = new JPanel();
-		frame.setSize(3000,3000);
+		// Load your image (replace with your own path)
+		ImageIcon icon = new ImageIcon("pokemon.jpg");
+		Image image = icon.getImage();
+		BackgroundPanel subPanel1 = new BackgroundPanel(image);
+		// Add your components *on top* of the background panel
+		subPanel1.setLayout(null); // or any layout you prefe
+		frame.setSize(400,400);
 		subPanel1.setPreferredSize (new Dimension(3000, 3000));
 		ImageIcon hero = new ImageIcon("hero.png");
 		ImageIcon slime = new ImageIcon("slom.png");
 		Image heroImage = getScaledImage(hero.getImage(), 50, 50);
+		Image slimeImage = getScaledImage(slime.getImage(), 50, 50);
 		hero = new ImageIcon(heroImage);
+		slime = new ImageIcon(slimeImage);
 		JLabel slimeLabel = new JLabel("", slime, SwingConstants.LEFT);
 		JLabel heroLabel = new JLabel("", hero, SwingConstants.RIGHT);
+		slimeLabel.setBounds(220, 200,50, 50);
+		heroLabel.setBounds(20, 200, 50, 50);
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    subPanel1.add(heroLabel);
+	    frame.setContentPane(subPanel1);
+		enemyHP = new JLabel();
+	    enemyHP.setBounds(220, 310, 80, 25); // (x, y, width, height)
+		hp_label = new JLabel();
+		hp_label.setBounds(20, 310, 80, 25);
+		subPanel1.add(heroLabel);
 	    subPanel1.add(slimeLabel);
-	    frame.add(myHP);
-	    frame.add(enemyHP);
-	    myHP.setLocation(50, 50);
-	    frame.add(subPanel1);
-	    frame.setVisible(true);
+		frame.add(hp_label);
+		frame.add(enemyHP);
+		frame.setVisible(true);
 	    return frame;
 	}
+
+
 	
 	private static Image getScaledImage(Image srcImg, int w, int h){
 	    BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
@@ -231,6 +249,9 @@ public class mainLevel {
 		} else {
 			character.setHP(character.getHP() + 20);
 		}
+		hp_label.setText("HP: " + Integer.toString(character.getHP()));
+		frame.revalidate();
+    	frame.repaint();
 
 	}
 
@@ -244,8 +265,10 @@ public class mainLevel {
 		}
 		int turn = 0;
 		while (enemy.getHP() > 0 && character.getHP() > 0) {
-			enemyHP.setText(Integer.toString(enemy.getHP()));
-			myHP.setText(Integer.toString(character.getHP()));
+			hp_label.setText("HP: " + Integer.toString(character.getHP()));
+			frame.revalidate();
+			frame.repaint();
+			enemyHP.setText("HP: " + Integer.toString(enemy.getHP()));
 			frame.setVisible(true);
 			startFight(turn, enemy);
 			boolean chosen = false;
@@ -370,3 +393,4 @@ public class mainLevel {
 	}
 
 }
+
